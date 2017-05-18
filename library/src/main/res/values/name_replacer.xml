@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="icon_name_replacer">
+        <!-- Word "app_" will be replaced with "" -->
+        <item>app_,</item>
+        <!-- Word "icon_" will be replaced with "app_" -->
+        <item>icon_,app_</item>
+    </string-array>
+
+
+</resources>
