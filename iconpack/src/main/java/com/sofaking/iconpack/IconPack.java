@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.sofaking.iconpack.exceptions.AppFilterNotLoadedException;
@@ -23,7 +24,7 @@ import com.sofaking.iconpack.exceptions.IconMaskingUnavailableException;
 import com.sofaking.iconpack.exceptions.XMLNotFoundException;
 import com.sofaking.iconpack.utils.ResourceHelper;
 import com.sofaking.iconpack.utils.RoundsExecutor;
-import com.sofaking.iconpack.utils.XmlParserGenerator;
+import com.sofaking.iconpack.utils.XmlPullParserGenerator;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -43,11 +44,6 @@ import java.util.Random;
 
 public class IconPack {
 
-
-    private static final String FILE_APPFILTER = "appfilter";
-    private static final String FILE_DRAWABLE = "drawable";
-    private static final String COMPONENT = "component";
-    private static final String DRAWABLE = "drawable";
 
     private final Handler mHandler;
     private final String mPackageName;
@@ -131,7 +127,7 @@ public class IconPack {
     public void initAppFilter(boolean initMasking, final AppFilterListener listener) {
         mAppFilterLoading = true;
         try {
-            final XmlPullParser parser = XmlParserGenerator.getXmlPullParser(mPackResources, mPackageName, FILE_APPFILTER);
+            final XmlPullParser parser = XmlPullParserGenerator.getXmlPullParser(mPackResources, mPackageName, Constants.FILE_APPFILTER);
 
             onLoadAppFilter(parser, initMasking);
 
@@ -216,21 +212,42 @@ public class IconPack {
         }
     }
 
+    /**
+     * @return - @{@link XmlPullParser} of the drawable.xml from the icon pack
+     * @throws XMLNotFoundException
+     * @throws XmlPullParserException
+     * @deprecated - This method is deprecated and will be removed soon
+     */
     public XmlPullParser getDrawableXmlPullParser() throws XMLNotFoundException, XmlPullParserException {
-        return XmlParserGenerator.getXmlPullParser(mPackResources, mPackageName, FILE_DRAWABLE);
+        return XmlPullParserGenerator.getXmlPullParser(mPackResources, mPackageName, Constants.FILE_DRAWABLE);
     }
 
+    /**
+     * @param drawableName
+     * @return - specific Drawable Icon, not necessarily found in the appfilter.xml
+     */
     @WorkerThread
     public Drawable getDrawableIconForName(String drawableName) {
         return loadDrawable(drawableName);
     }
 
 
-    public Drawable getDefaultIconForPackage(PackageManager packageManager, ComponentName componentName, boolean maskFallback) {
+    /**
+     * This method will first try to look up the icon in the AppFilterMap.
+     * If no icon is found in the AppFilter, a masked icon will be generated for this app.
+     *
+     * @param context
+     * @param componentName
+     * @param maskFallback
+     * @return
+     */
+    @Nullable
+    @WorkerThread
+    public Drawable getDefaultIconForPackage(Context context, ComponentName componentName, boolean maskFallback) {
 
         Intent intent = new Intent();
         intent.setComponent(componentName);
-        List<ResolveInfo> activites = packageManager.queryIntentActivities(intent, PackageManager.GET_META_DATA);
+        List<ResolveInfo> activites = context.getPackageManager().queryIntentActivities(intent, PackageManager.GET_META_DATA);
 
         if (activites.size() > 0) {
             return getDefaultIconForPackage(activites.get(0), maskFallback);
@@ -339,7 +356,7 @@ public class IconPack {
 
                     } else if (parser.getName().equals("item")) {
 
-                        String name = parser.getAttributeValue(null, DRAWABLE);
+                        String name = parser.getAttributeValue(null, Constants.DRAWABLE);
 
                         onAddIconToCategory(currentTitle, name);
                     }
@@ -393,7 +410,7 @@ public class IconPack {
                             onLoadMask(parser);
                         }
 
-                        if (parser.getName().equals(IconMasking.ITEM)) {
+                        if (parser.getName().equals(Constants.ITEM)) {
                             onLoadAppFilter(parser);
                         }
                     }
@@ -413,9 +430,9 @@ public class IconPack {
         String drawableName = null;
 
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeName(i).equals(COMPONENT)) {
+            if (parser.getAttributeName(i).equals(Constants.COMPONENT)) {
                 componentName = parser.getAttributeValue(i);
-            } else if (parser.getAttributeName(i).equals(DRAWABLE)) {
+            } else if (parser.getAttributeName(i).equals(Constants.DRAWABLE)) {
                 drawableName = parser.getAttributeValue(i);
             }
         }
@@ -426,11 +443,11 @@ public class IconPack {
 
     @WorkerThread
     private void onLoadMask(XmlPullParser parser) {
-        if (parser.getName().equals(IconMasking.BACKGROUND)) {
+        if (parser.getName().equals(Constants.BACKGROUND)) {
 
 
             for (int i = 0; i < parser.getAttributeCount(); i++) {
-                if (parser.getAttributeName(i).startsWith(IconMasking.BACKGROUND_IMG)) {
+                if (parser.getAttributeName(i).startsWith(Constants.BACKGROUND_IMG)) {
                     String drawableName = parser.getAttributeValue(i);
                     Bitmap iconback = loadDrawable(drawableName).getBitmap();
                     if (iconback != null) {
@@ -444,8 +461,8 @@ public class IconPack {
 
                 }
             }
-        } else if (parser.getName().equals(IconMasking.MASK)) {
-            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.IMG_1_VALUE)) {
+        } else if (parser.getName().equals(Constants.MASK)) {
+            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(Constants.IMG_1_VALUE)) {
                 String drawableName = parser.getAttributeValue(0);
 
                 if (mIconMasking == null) {
@@ -454,8 +471,8 @@ public class IconPack {
                 mIconMasking.setMaskBitmap(loadDrawable(drawableName).getBitmap());
 
             }
-        } else if (parser.getName().equals(IconMasking.FRONT)) {
-            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.IMG_1_VALUE)) {
+        } else if (parser.getName().equals(Constants.FRONT)) {
+            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(Constants.IMG_1_VALUE)) {
                 String drawableName = parser.getAttributeValue(0);
 
                 if (mIconMasking == null) {
@@ -464,9 +481,9 @@ public class IconPack {
 
                 mIconMasking.setFrontBitmap(loadDrawable(drawableName).getBitmap());
             }
-        } else if (parser.getName().equals(IconMasking.SCALE)) {
+        } else if (parser.getName().equals(Constants.SCALE)) {
             // mFactor
-            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.FACTOR)) {
+            if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(Constants.FACTOR)) {
 
                 if (mIconMasking == null) {
                     mIconMasking = new IconMasking();

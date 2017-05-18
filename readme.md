@@ -11,6 +11,11 @@ or Gradle:
 compile 'com.sofakingforever.libraries:iconpack:0.0.3@aar'
 ```
 
+Still on the Todo List
+--------
+- Icon Selection Activity
+- IconPack Selection Activity
+
 License
 -------
 

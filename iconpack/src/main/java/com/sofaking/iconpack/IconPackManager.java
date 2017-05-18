@@ -1,6 +1,5 @@
 package com.sofaking.iconpack;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -16,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by nadavfima on 18/05/2017.
- * <p>
  * The @{@link IconPackManager} holds the objects for the installed icon packs.
  * You should only have one of these in your app.
  */
@@ -26,6 +23,9 @@ public class IconPackManager {
     private HashMap<String, IconPack> mInstalledIconPacks;
     private boolean mInstalledPacksLoaded;
 
+    /**
+     * You should only have one of these in your app.
+     */
     public IconPackManager() {
 
         // init the hasmap
