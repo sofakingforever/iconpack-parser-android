@@ -1,5 +1,6 @@
 package com.sofaking.iconpack;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -18,6 +19,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 
 import com.sofaking.iconpack.exceptions.AppFilterNotLoadedException;
+import com.sofaking.iconpack.exceptions.IconMaskingUnavailableException;
 import com.sofaking.iconpack.exceptions.XMLNotFoundException;
 import com.sofaking.iconpack.utils.ResourceHelper;
 import com.sofaking.iconpack.utils.RoundsExecutor;
@@ -71,7 +73,7 @@ public class IconPack {
         mPackageName = packageName;
         mPackageManager = context.getPackageManager();
         mHandler = handler;
-        mIconMasking = new IconMasking();
+
 
         initIconPack();
 
@@ -103,7 +105,7 @@ public class IconPack {
      * @param initMasking
      */
     @MainThread
-    public void initAppFilterAsync(final AppFilterListener listener, final boolean initMasking) {
+    public void initAppFilterAsync(final boolean initMasking, final AppFilterListener listener) {
 
 
         RoundsExecutor.execute(new Runnable() {
@@ -223,6 +225,21 @@ public class IconPack {
         return loadDrawable(drawableName);
     }
 
+
+    public Drawable getDefaultIconForPackage(PackageManager packageManager, ComponentName componentName, boolean maskFallback) {
+
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+        List<ResolveInfo> activites = packageManager.queryIntentActivities(intent, PackageManager.GET_META_DATA);
+
+        if (activites.size() > 0) {
+            return getDefaultIconForPackage(activites.get(0), maskFallback);
+        } else {
+            return null;
+        }
+
+    }
+
     /**
      * This method will first try to look up the icon in the AppFilterMap.
      * If no icon is found in the AppFilter, a masked icon will be generated for this app.
@@ -236,6 +253,12 @@ public class IconPack {
 
         if (!mAppFilterLoaded) {
             throw new AppFilterNotLoadedException();
+        }
+
+        if (maskFallback) {
+            if (mIconMasking == null) {
+                throw new IconMaskingUnavailableException();
+            }
         }
 
         String appPackageName = info.activityInfo.packageName;
@@ -404,11 +427,18 @@ public class IconPack {
     @WorkerThread
     private void onLoadMask(XmlPullParser parser) {
         if (parser.getName().equals(IconMasking.BACKGROUND)) {
+
+
             for (int i = 0; i < parser.getAttributeCount(); i++) {
                 if (parser.getAttributeName(i).startsWith(IconMasking.BACKGROUND_IMG)) {
                     String drawableName = parser.getAttributeValue(i);
                     Bitmap iconback = loadDrawable(drawableName).getBitmap();
                     if (iconback != null) {
+
+                        if (mIconMasking == null) {
+                            mIconMasking = new IconMasking();
+                        }
+
                         mIconMasking.addBackgroundBitmap(iconback);
                     }
 
@@ -418,17 +448,30 @@ public class IconPack {
             if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.IMG_1_VALUE)) {
                 String drawableName = parser.getAttributeValue(0);
 
+                if (mIconMasking == null) {
+                    mIconMasking = new IconMasking();
+                }
                 mIconMasking.setMaskBitmap(loadDrawable(drawableName).getBitmap());
 
             }
         } else if (parser.getName().equals(IconMasking.FRONT)) {
             if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.IMG_1_VALUE)) {
                 String drawableName = parser.getAttributeValue(0);
+
+                if (mIconMasking == null) {
+                    mIconMasking = new IconMasking();
+                }
+
                 mIconMasking.setFrontBitmap(loadDrawable(drawableName).getBitmap());
             }
         } else if (parser.getName().equals(IconMasking.SCALE)) {
             // mFactor
             if (parser.getAttributeCount() > 0 && parser.getAttributeName(0).equals(IconMasking.FACTOR)) {
+
+                if (mIconMasking == null) {
+                    mIconMasking = new IconMasking();
+                }
+
                 mIconMasking.setFactor(Float.valueOf(parser.getAttributeValue(0)));
 
             }

@@ -1,6 +1,7 @@
 package com.sofaking.iconpack;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Handler;
@@ -83,7 +84,7 @@ public class IconPackManager {
      * @param listener - Attach a @{@link Listener} so you know when the installed packs were loaded
      */
     @MainThread
-    public void loadInstalledIconPacksAsync(final Application context, final Listener listener) {
+    public void loadInstalledIconPacksAsync(final Context context, final Listener listener) {
 
         final Handler handler = new Handler();
 
@@ -113,7 +114,7 @@ public class IconPackManager {
      * @param context
      * @param handler
      */
-    private void queryInstalledIconPacks(Application context, Handler handler) {
+    private void queryInstalledIconPacks(Context context, Handler handler) {
         PackageManager pm = context.getPackageManager();
 
 

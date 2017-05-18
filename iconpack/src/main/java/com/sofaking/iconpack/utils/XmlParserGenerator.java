@@ -11,9 +11,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by nadavfima on 14/05/2017.
- */
 
 public class XmlParserGenerator {
 
