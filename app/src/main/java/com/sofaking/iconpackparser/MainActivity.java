@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
                         ComponentName component = new ComponentName("com.app.example", ".ExampleActivity");
 
-                        Drawable icon = mIconPack.getDefaultIconForPackage(getPackageManager(), component, true);
+                        Drawable icon = mIconPack.getDefaultIconForPackage(MainActivity.this, component, true);
 
 
                     }
