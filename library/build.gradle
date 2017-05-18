@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 25
@@ -24,6 +26,8 @@ android {
 
 }
 
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -31,4 +35,86 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+}
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+group = 'com.sofakingforever.libraries' // Change this to match your package name
+version = '0.0.1' // Change this to match your version number
+
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'Naughty or Nice'
+            description 'A library for finding out whether someone is on the naughty list or the nice list'
+            url 'https://github.com/sofakingforever/IconPackParser-Android'
+            inceptionYear '2017'
+
+            packaging 'aar'
+            groupId 'com.sofakingforever.libraries'
+            artifactId 'iconpack'
+            version '0.0.1'
+
+            licenses {
+                license {
+                    name 'Apache 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0'
+                }
+            }
+            scm {
+                connection 'https://github.com/northpolecoder/elf.git'
+                url 'https://github.com/northpolecoder/elf'
+
+            }
+            developers {
+                developer {
+                    id = 'sofakingforever'
+//                    name 'Nick'
+                }
+            }
+        }
+    }
+}
+
+Properties bintrayProperties = new Properties()
+bintrayProperties.load(project.rootProject.file('bintray.properties').newDataInputStream())
+
+bintray {
+    user = bintrayProperties.getProperty('user')
+    key = bintrayProperties.get('key')
+    configurations = ['archives']
+    pkg {
+        repo = 'libraries'
+        name = 'IconPackParser-Android'
+        userOrg = 'sofakingforever'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/sofakingforever/IconPackParser-Android.git'
+        publish = true
+        version {
+            name = '0.0.1'
+            desc = 'IconPackParser-Android 0.0.1'
+            released = new Date()
+            vcsTag = 'v0.0.1'
+        }
+    }
 }
