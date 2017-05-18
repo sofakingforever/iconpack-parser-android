@@ -61,7 +61,7 @@ artifacts {
 }
 
 group = 'com.sofakingforever.libraries' // Change this to match your package name
-version = '0.0.1' // Change this to match your version number
+version = '0.0.2' // Change this to match your version number
 
 
 install {
@@ -75,7 +75,7 @@ install {
             packaging 'aar'
             groupId 'com.sofakingforever.libraries'
             artifactId 'iconpack'
-            version '0.0.1'
+            version '0.0.2'
 
             licenses {
                 license {
@@ -114,10 +114,10 @@ bintray {
         vcsUrl = 'https://github.com/sofakingforever/IconPackParser-Android.git'
         publish = true
         version {
-            name = '0.0.1'
-            desc = 'IconPackParser-Android 0.0.1'
+            name = '0.0.2'
+            desc = 'IconPackParser-Android 0.0.2'
             released = new Date()
-            vcsTag = 'v0.0.1'
+            vcsTag = 'v0.0.2'
         }
     }
 }
@@ -152,7 +152,7 @@ publishing {
             artifact javadocJar
             groupId 'com.sofakingforever.libraries'
             artifactId 'iconpack'
-            version '0.0.1'
+            version '0.0.2'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Your description of the lib')
