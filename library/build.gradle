@@ -1,10 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
 
     defaultConfig {
         minSdkVersion 9
@@ -102,6 +104,7 @@ bintrayProperties.load(project.rootProject.file('bintray.properties').newDataInp
 bintray {
     user = bintrayProperties.getProperty('user')
     key = bintrayProperties.get('key')
+    publications = ['MyPublication']
     configurations = ['archives']
     pkg {
         repo = 'libraries'
@@ -115,6 +118,48 @@ bintray {
             desc = 'IconPackParser-Android 0.0.1'
             released = new Date()
             vcsTag = 'v0.0.1'
+        }
+    }
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "developer-id"
+            name "developer-name"
+            email "dev@d.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/sofakingforever/IconPackParser-Android"
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+//            from android.sourceSets.main.java.srcDirs
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.sofakingforever.libraries'
+            artifactId 'iconpack'
+            version '0.0.1'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Your description of the lib')
+                root.appendNode('name', 'Your name of the lib')
+                root.appendNode('url', 'https://site_for_lib.tld')
+                root.children().last() + pomConfig
+            }
         }
     }
 }
