@@ -1,7 +1,7 @@
 IconPackParser-Android
 ======
 
-An Android Library to parse IconPacks installed on the device.
+An Android Library to parse Icon Packs installed on the device, and fetch their icons.
 
 Download
 --------
