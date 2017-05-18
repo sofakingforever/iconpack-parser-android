@@ -6,10 +6,50 @@ An Android Library to parse Icon Packs installed on the device, and fetch their 
 Download
 --------
 
-or Gradle:
+using Gradle:
 ```groovy
 compile 'com.sofakingforever.libraries:iconpack:0.0.3@aar'
 ```
+
+
+Usage Example
+--------
+
+with Java:
+
+```java
+
+mIconPackManager = new IconPackManager();
+
+mIconPackManager.loadInstalledIconPacksAsync(getApplicationContext(), new IconPackManager.Listener() {
+            @Override
+            public void onIconPacksLoaded() {
+
+                mIconPack = mIconPackManager.getInstalledIconPack("com.example.iconpack");
+
+                mIconPack.initAppFilterAsync(true, new IconPack.AppFilterListener() {
+                    @Override
+                    public void onAppFilterLoaded() {
+
+                        ComponentName component = new ComponentName("com.app.example", ".ExampleActivity");
+
+                        Drawable icon = mIconPack.getDefaultIconForPackage(MainActivity.this, component, true);
+
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(Exception e) {
+
+                    }
+                });
+
+
+            }
+        });
+
+```
+
 
 Still on the Todo List
 --------
