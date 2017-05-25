@@ -61,6 +61,7 @@ public class IconPack {
     private boolean mAppFilterLoaded;
     private boolean mAppFilterLoading;
     private boolean mDrawableMapLoaded;
+    private BitmapDrawable mTemporaryDrawable;
 
 
     public IconPack(Context context, String packageName, Handler handler) throws PackageManager.NameNotFoundException {
@@ -449,14 +450,17 @@ public class IconPack {
             for (int i = 0; i < parser.getAttributeCount(); i++) {
                 if (parser.getAttributeName(i).startsWith(Constants.BACKGROUND_IMG)) {
                     String drawableName = parser.getAttributeValue(i);
-                    Bitmap iconback = loadDrawable(drawableName).getBitmap();
-                    if (iconback != null) {
+                    mTemporaryDrawable = loadDrawable(drawableName);
+                    if (mTemporaryDrawable != null) {
+                        Bitmap iconback = mTemporaryDrawable.getBitmap();
+                        if (iconback != null) {
 
-                        if (mIconMasking == null) {
-                            mIconMasking = new IconMasking();
+                            if (mIconMasking == null) {
+                                mIconMasking = new IconMasking();
+                            }
+
+                            mIconMasking.addBackgroundBitmap(iconback);
                         }
-
-                        mIconMasking.addBackgroundBitmap(iconback);
                     }
 
                 }
@@ -468,7 +472,10 @@ public class IconPack {
                 if (mIconMasking == null) {
                     mIconMasking = new IconMasking();
                 }
-                mIconMasking.setMaskBitmap(loadDrawable(drawableName).getBitmap());
+                mTemporaryDrawable = loadDrawable(drawableName);
+                if (mTemporaryDrawable != null) {
+                    mIconMasking.setMaskBitmap(mTemporaryDrawable.getBitmap());
+                }
 
             }
         } else if (parser.getName().equals(Constants.FRONT)) {
@@ -479,7 +486,11 @@ public class IconPack {
                     mIconMasking = new IconMasking();
                 }
 
-                mIconMasking.setFrontBitmap(loadDrawable(drawableName).getBitmap());
+                mTemporaryDrawable = loadDrawable(drawableName);
+
+                if (mTemporaryDrawable != null) {
+                    mIconMasking.setFrontBitmap(mTemporaryDrawable.getBitmap());
+                }
             }
         } else if (parser.getName().equals(Constants.SCALE)) {
             // mFactor
@@ -489,7 +500,15 @@ public class IconPack {
                     mIconMasking = new IconMasking();
                 }
 
-                mIconMasking.setFactor(Float.valueOf(parser.getAttributeValue(0)));
+                float factor = IconMasking.DEFAULT_FACTOR;
+
+                try {
+                    factor = Float.parseFloat(parser.getAttributeValue(0));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+                mIconMasking.setFactor(factor);
 
             }
         }

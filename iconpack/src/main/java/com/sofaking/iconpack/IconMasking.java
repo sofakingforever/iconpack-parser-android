@@ -12,11 +12,13 @@ import java.util.List;
 class IconMasking {
 
 
-    private List<Bitmap> mBackImages = new ArrayList<Bitmap>();
+    static final float DEFAULT_FACTOR = 1.0f;
+
+    List<Bitmap> mBackImages = new ArrayList<Bitmap>();
     Bitmap mMaskImage = null;
     Bitmap mFrontImage = null;
 
-    private float mFactor = 1.0f;
+    private float mFactor = DEFAULT_FACTOR;
 
 
     public void addBackgroundBitmap(Bitmap iconback) {
