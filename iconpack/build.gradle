@@ -64,13 +64,13 @@ artifacts {
 }
 
 group = 'com.sofakingforever.libraries' // Change this to match your package name
-version = '0.0.4' // Change this to match your version number
+version = '0.0.5' // Change this to match your version number
 
 
 install {
     repositories.mavenInstaller {
         pom.project {
-            name 'Naughty or Nice'
+            name 'IconPackParser'
             description 'A library for finding out whether someone is on the naughty list or the nice list'
             url 'https://github.com/sofakingforever/IconPackParser-Android'
             inceptionYear '2017'
@@ -78,7 +78,7 @@ install {
             packaging 'aar'
             groupId 'com.sofakingforever.libraries'
             artifactId 'iconpack'
-            version '0.0.4'
+            version '0.0.5'
 
             licenses {
                 license {
@@ -117,10 +117,10 @@ bintray {
         vcsUrl = 'https://github.com/sofakingforever/IconPackParser-Android.git'
         publish = true
         version {
-            name = '0.0.4'
-            desc = 'IconPackParser-Android 0.0.4'
+            name = '0.0.5'
+            desc = 'IconPackParser-Android 0.0.5'
             released = new Date()
-            vcsTag = 'v0.0.4'
+            vcsTag = 'v0.0.5'
         }
     }
 }
@@ -155,7 +155,7 @@ publishing {
             artifact javadocJar
             groupId 'com.sofakingforever.libraries'
             artifactId 'iconpack'
-            version '0.0.4'
+            version '0.0.5'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Your description of the lib')
