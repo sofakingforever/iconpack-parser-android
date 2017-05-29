@@ -20,7 +20,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.sofaking.iconpack.exceptions.AppFilterNotLoadedException;
-import com.sofaking.iconpack.exceptions.IconMaskingUnavailableException;
 import com.sofaking.iconpack.exceptions.XMLNotFoundException;
 import com.sofaking.iconpack.utils.ResourceHelper;
 import com.sofaking.iconpack.utils.RoundsExecutor;
@@ -273,12 +272,6 @@ public class IconPack {
             throw new AppFilterNotLoadedException();
         }
 
-        if (maskFallback) {
-            if (mIconMasking == null) {
-                throw new IconMaskingUnavailableException();
-            }
-        }
-
         String appPackageName = info.activityInfo.packageName;
 
         PackageManager pm = mContextReference.get().getPackageManager();
@@ -324,7 +317,7 @@ public class IconPack {
             }
         }
 
-        return maskFallback ? generateMaskedIcon(defaultIcon) : defaultIcon;
+        return (maskFallback && mIconMasking != null) ? generateMaskedIcon(defaultIcon) : defaultIcon;
     }
 
 

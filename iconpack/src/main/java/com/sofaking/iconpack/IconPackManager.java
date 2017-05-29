@@ -33,6 +33,10 @@ public class IconPackManager {
 
     }
 
+    public boolean isInstalledPacksLoaded(){
+        return mInstalledPacksLoaded;
+    }
+
 
     /**
      * @param packageName - the packageName of the installed @{@link IconPack}s
