@@ -8,7 +8,7 @@ Download
 
 using Gradle:
 ```groovy
-compile 'com.sofakingforever.libraries:iconpack:0.0.6@aar'
+compile 'com.sofakingforever.libraries:iconpack:0.0.7@aar'
 ```
 
 

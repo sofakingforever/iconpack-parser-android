@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class IntentHelper {
     @NonNull
-    static List<ResolveInfo> getResolveInfos(PackageManager pm) {
-        List<ResolveInfo> rinfo = new ArrayList<ResolveInfo>();
+    static HashSet<ResolveInfo> getResolveInfos(PackageManager pm) {
+        HashSet<ResolveInfo> rinfo = new HashSet<ResolveInfo>();
         rinfo.addAll(pm.queryIntentActivities(new Intent("org.adw.launcher.THEMES"), PackageManager.GET_META_DATA));
         rinfo.addAll(pm.queryIntentActivities(new Intent("com.gau.go.launcherex.theme"), PackageManager.GET_META_DATA));
         rinfo.addAll(pm.queryIntentActivities(new Intent("mobi.bbase.ahome.THEME"), PackageManager.GET_META_DATA));

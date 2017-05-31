@@ -12,6 +12,7 @@ import com.sofaking.iconpack.utils.RoundsExecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class IconPackManager {
 
     }
 
-    public boolean isInstalledPacksLoaded(){
+    public boolean isInstalledPacksLoaded() {
         return mInstalledPacksLoaded;
     }
 
@@ -119,12 +120,16 @@ public class IconPackManager {
      * @param handler
      */
     private void queryInstalledIconPacks(Context context, Handler handler) {
+
+        mInstalledPacksLoaded = false;
         PackageManager pm = context.getPackageManager();
 
 
         // merge those lists
-        List<ResolveInfo> rinfo = IntentHelper.getResolveInfos(pm);
+        HashSet<ResolveInfo> rinfo = IntentHelper.getResolveInfos(pm);
 
+
+        mInstalledIconPacks = new HashMap<>();
 
         for (ResolveInfo ri : rinfo) {
 
