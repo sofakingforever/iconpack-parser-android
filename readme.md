@@ -56,6 +56,11 @@ Still on the Todo List
 - Icon Selection Activity
 - IconPack Selection Activity
 
+
+### Used in
+--------
+- [Dailydo Android Launcher](https://play.google.com/store/apps/details?id=com.sofaking.dailydo)
+
 License
 -------
 
