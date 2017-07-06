@@ -8,7 +8,16 @@ Download
 
 using Gradle:
 ```groovy
-compile 'com.sofakingforever.libraries:iconpack:0.0.7@aar'
+
+repositories {
+
+    maven { url "http://dl.bintray.com/sofakingforever/libraries" }
+
+}
+
+dependencies {
+    compile 'com.sofakingforever.libraries:iconpack:0.0.8@aar'
+}
 ```
 
 
