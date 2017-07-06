@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.sofakingforever.libraries:iconpack:0.0.8@aar'
+    compile 'com.sofakingforever.libraries:iconpack:0.0.7@aar'
 }
 ```
 
